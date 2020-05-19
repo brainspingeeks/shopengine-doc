@@ -1,15 +1,15 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "ShopShopBox",
-        "description": "ShopShopBox API Documentation\n## You can filter the results with following filters: \n *       'eq' => '=',\n *       'ne' => '!=',\n *       'like' => 'like',\n *        'gt' => '>',\n *        'lt' => '<',\n *        'ge' => '>=',\n *        'le' => '<=',\n### example\n```php\n$articles = $client->get('article',['name-eq' => 'mckenzie.com']);\n```\nWill response with an json-object with all articles named 'mckenzie.com'\n\n\n\n\n",
+        "title": "Shopengine Server to Server API",
+        "description": "Shopengine Server to Server API Documentation\n## You can filter the results with following filters: \n *       'eq' => '=',\n *       'ne' => '!=',\n *       'like' => 'like',\n *        'gt' => '>',\n *        'lt' => '<',\n *        'ge' => '>=',\n *        'le' => '<=',\n### example\n```php\n$articles = $client->get('article',['name-eq' => 'mckenzie.com']);\n```\nWill response with an json-object with all articles named 'mckenzie.com'\n\n\n\n\n",
         "version": "1",
         "x-logo": {
             "url": "/logo.png",
             "backgroundColor": "transparent"
         }
     },
-    "basePath": "/v1",
+    "basePath": "/v2",
     "schemes": [
         "https"
     ],
