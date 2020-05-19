@@ -1,0 +1,3077 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "ShopShopBox",
+        "description": "ShopShopBox API Documentation\n## You can filter the results with following filters: \n *       'eq' => '=',\n *       'ne' => '!=',\n *       'like' => 'like',\n *        'gt' => '>',\n *        'lt' => '<',\n *        'ge' => '>=',\n *        'le' => '<=',\n### example\n```php\n$articles = $client->get('article',['name-eq' => 'mckenzie.com']);\n```\nWill response with an json-object with all articles named 'mckenzie.com'\n\n\n\n\n",
+        "version": "1",
+        "x-logo": {
+            "url": "/logo.png",
+            "backgroundColor": "transparent"
+        }
+    },
+    "basePath": "/v1",
+    "schemes": [
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/article": {
+            "get": {
+                "tags": [
+                    "article"
+                ],
+                "summary": "Find articles",
+                "description": "request for specific items needs to be in following format:\n     * parametername-action=parametervalue",
+                "operationId": "articleFind",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/aggregateId"
+                    },
+                    {
+                        "$ref": "#/parameters/versionId"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of the article",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "sku",
+                        "in": "query",
+                        "description": "SKUs of the article",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "status of the article",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "available",
+                                "disabled",
+                                "out_of_stock"
+                            ]
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "stock",
+                        "in": "query",
+                        "description": "stock of the article",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "is_virtual",
+                        "in": "query",
+                        "description": "is_virtual of the article",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "boolean"
+                        },
+                        "collectionFormat": "pipes"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Article"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/code": {
+            "get": {
+                "tags": [
+                    "code"
+                ],
+                "summary": "Find codes",
+                "description": "",
+                "operationId": "codeFind",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/aggregateId"
+                    },
+                    {
+                        "$ref": "#/parameters/versionId"
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "Code of the code",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Status of the code",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "enabled",
+                                "disabled"
+                            ]
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "codepoolId",
+                        "in": "query",
+                        "description": "codepoolId of the code",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "pipes"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Code"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "code"
+                ],
+                "summary": "Adds new Codes",
+                "description": "In validation you need to use one or more of the following validations or none at all\n<ul>\n<li>EmailValidation</li>\n<li>ExpiresValidation</li>\n<li>IngoreArticlesValidation</li>\n<li>NewsletterValidation</li>\n<li>StartValidation</li>\n<li>UsageCountValidation</li>\n</ul>\nIn this example we used EmailValidation\nfor specific informations about the validation models please see the model list at the end of the page.When the quantity exceeds 100, then there will be no response.",
+                "operationId": "codeAdd",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "required": [
+                                "conditionSetVersionId",
+                                "status",
+                                "validation"
+                            ],
+                            "properties": {
+                                "conditionSetVersionId": {
+                                    "type": "integer"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "enabled",
+                                        "disabled"
+                                    ]
+                                },
+                                "validation": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/EmailValidation"
+                                    }
+                                },
+                                "note": {
+                                    "type": "string",
+                                    "default": ""
+                                },
+                                "codepoolId": {
+                                    "type": "integer",
+                                    "default": "The ID of the Default Pool"
+                                },
+                                "quantity": {
+                                    "type": "integer",
+                                    "default": 1
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Code"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/code/{aggregateId}": {
+            "get": {
+                "tags": [
+                    "code"
+                ],
+                "summary": "Get a specific code",
+                "description": "",
+                "operationId": "codeGet",
+                "parameters": [
+                    {
+                        "name": "aggregateId",
+                        "in": "path",
+                        "description": "aggregateId of the code",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/Code"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/responses/404"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "code"
+                ],
+                "summary": "Update a Code",
+                "description": "",
+                "operationId": "codeUpdate",
+                "parameters": [
+                    {
+                        "name": "aggregateId",
+                        "in": "path",
+                        "description": "aggregateId of the code",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "code": {
+                                    "type": "string"
+                                },
+                                "conditionSetVersionId": {
+                                    "type": "integer"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "enabled",
+                                        "disabled"
+                                    ]
+                                },
+                                "validation": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Validation"
+                                    }
+                                },
+                                "codepoolId": {
+                                    "type": "integer",
+                                    "default": "The ID of the Default Pool"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Code"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/code/count": {
+            "get": {
+                "tags": [
+                    "code"
+                ],
+                "summary": "Count Number of Codes",
+                "description": "",
+                "operationId": "codeCount",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/aggregateId"
+                    },
+                    {
+                        "$ref": "#/parameters/versionId"
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "Code of the code",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Status of the code",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "enabled",
+                                "disabled"
+                            ]
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "codepoolId",
+                        "in": "query",
+                        "description": "codepoolId of the code",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "pipes"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/codeless": {
+            "get": {
+                "tags": [
+                    "codeless"
+                ],
+                "summary": "Find codesless",
+                "description": "",
+                "operationId": "codelessFind",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/aggregateId"
+                    },
+                    {
+                        "$ref": "#/parameters/versionId"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Status of the codeless",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "enabled",
+                                "disabled"
+                            ]
+                        },
+                        "collectionFormat": "pipes"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Codeless"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "codeless"
+                ],
+                "summary": "Adds new Codes",
+                "description": "In validation you need to specify at least start and expire validation. Start and Expire\n     Validation must be given in the following format:\n *     'validation' => ['start'=>'today','expires'=>'tomorrow']\n <ul>\n       <li>EmailValidation</li>\n       <li>ExpiresValidation</li>\n       <li>IngoreArticlesValidation</li>\n       <li>NewsletterValidation</li>\n       <li>StartValidation</li>\n       <li>UsageCountValidation</li>\n       </ul>\n       for specific informations about the validation models please see the model list at the end of the page.When the quantity exceeds 100, then there will be no response.",
+                "operationId": "codelessAdd",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "required": [
+                                "name",
+                                "conditionSetVersionId",
+                                "status",
+                                "validation"
+                            ],
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "conditionSetVersionId": {
+                                    "type": "integer"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "enabled",
+                                        "disabled"
+                                    ]
+                                },
+                                "validation": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/EmailValidation"
+                                    }
+                                },
+                                "note": {
+                                    "type": "string",
+                                    "default": ""
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Codeless"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/codeless/{aggregateId}": {
+            "get": {
+                "tags": [
+                    "codeless"
+                ],
+                "summary": "Get a specific codeless",
+                "description": "",
+                "operationId": "codelessGet",
+                "parameters": [
+                    {
+                        "name": "aggregateId",
+                        "in": "path",
+                        "description": "aggregateId of the codeless",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/Codeless"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/responses/404"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "codeless"
+                ],
+                "summary": "Update a Code",
+                "description": "at least start and expire validation must be given",
+                "operationId": "codelessUpdate",
+                "parameters": [
+                    {
+                        "name": "aggregateId",
+                        "in": "path",
+                        "description": "aggregateId of the codeless",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "required": [
+                                "name",
+                                "conditionSetVersionId",
+                                "status",
+                                "validation"
+                            ],
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "conditionSetVersionId": {
+                                    "type": "integer"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "enabled",
+                                        "disabled"
+                                    ]
+                                },
+                                "validation": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Validation"
+                                    }
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Codeless"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/codeless/count": {
+            "get": {
+                "tags": [
+                    "codeless"
+                ],
+                "summary": "Count Number of Codes",
+                "description": "",
+                "operationId": "codelessCount",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/aggregateId"
+                    },
+                    {
+                        "$ref": "#/parameters/versionId"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Status of the codeless",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "enabled",
+                                "disabled"
+                            ]
+                        },
+                        "collectionFormat": "pipes"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/codepool": {
+            "get": {
+                "tags": [
+                    "codepool"
+                ],
+                "summary": "Find Codepools",
+                "description": "",
+                "operationId": "codepoolFind",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "id of the codepool",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of the codepool",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "trackingSlug",
+                        "in": "query",
+                        "description": "trackingSlug of the codepool",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "defaultConditionSetAggregateId",
+                        "in": "query",
+                        "description": "defaultConditionSetAggregateId of the codepool",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "pipes"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Codepool"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "codepool"
+                ],
+                "summary": "Adds new Codepool",
+                "description": "",
+                "operationId": "codepoolAdd",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "required": [
+                                "name",
+                                "description",
+                                "trackingSlug"
+                            ],
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                },
+                                "trackingSlug": {
+                                    "type": "string"
+                                },
+                                "defaultConditionSetAggregateId": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Codepool"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/codepool/{id}": {
+            "get": {
+                "tags": [
+                    "codepool"
+                ],
+                "summary": "Get a specific codepool",
+                "description": "",
+                "operationId": "codepoolGet",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the codepool",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/Codepool"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/responses/404"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "codepool"
+                ],
+                "summary": "Update the codepool",
+                "description": "",
+                "operationId": "codepoolUpdate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the codepool",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                },
+                                "trackingSlug": {
+                                    "type": "string"
+                                },
+                                "defaultConditionSetAggregateId": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Codepool"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/codepool/count": {
+            "get": {
+                "tags": [
+                    "codepool"
+                ],
+                "summary": "Count Number of Codepools",
+                "description": "",
+                "operationId": "codepoolCount",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "id of the codepool",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of the codepool",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "trackingSlug",
+                        "in": "query",
+                        "description": "trackingSlug of the codepool",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "defaultConditionSetAggregateId",
+                        "in": "query",
+                        "description": "defaultConditionSetAggregateId of the codepool",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "pipes"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/conditionset": {
+            "get": {
+                "tags": [
+                    "conditionset"
+                ],
+                "summary": "Find ConditionSet",
+                "description": "",
+                "operationId": "conditionsetFind",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/aggregateId"
+                    },
+                    {
+                        "$ref": "#/parameters/versionId"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ConditionSet"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "conditionset"
+                ],
+                "summary": "Adds new ConditionSet",
+                "description": "For conditions add one or more of following conditions:\n <ul>\n <li>ShippingCondition </li>\n <li>OrCondition</li>\n <li>PercentageModifierCondition</li>\n <li>MinimumArticleCondition</li>\n <li>GroupCondition</li>\n <li>FreeArticleCondition</li>\n <li>CountryCondition</li>\n <li>CombineableWithEverythingCondition</li>\n <li>BindArticleCondition</li>\n <li>AddArticalCondition </li>\n <li>AbsoluteModifierCondition.</li>\n\n For reference see the models down the page, in this example we used FreeArticleCondition.",
+                "operationId": "conditionsetAdd",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "required": [
+                                "name",
+                                "conditions"
+                            ],
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "conditions": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/FreeArticleCondition"
+                                    }
+                                },
+                                "group": {
+                                    "type": "integer",
+                                    "default": "0"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ConditionSet"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/conditionset/{aggregateId}": {
+            "get": {
+                "tags": [
+                    "conditionset"
+                ],
+                "description": "Get a specific ConditionSet",
+                "operationId": "conditionsetGet",
+                "parameters": [
+                    {
+                        "name": "aggregateId",
+                        "in": "path",
+                        "description": "aggregateId of the conditionset",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/ConditionSet"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/responses/404"
+                    }
+                }
+            }
+        },
+        "/conditionset/count": {
+            "get": {
+                "tags": [
+                    "conditionset"
+                ],
+                "summary": "Count Number of Conditionset",
+                "description": "",
+                "operationId": "conditionsetCount",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "id of the conditionset",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of the conditionset",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/newsletter/enter": {
+            "post": {
+                "tags": [
+                    "newsletter"
+                ],
+                "summary": "Enter Email into Newsletter as pending",
+                "description": "",
+                "operationId": "newsletterEnter",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Email to enter into Newsletter",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "properties": {
+                                "msg": {
+                                    "type": "string"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "success",
+                                        "error"
+                                    ]
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/newsletter/code": {
+            "post": {
+                "tags": [
+                    "newsletter"
+                ],
+                "summary": "Change status to Opt-In and send Code via Email",
+                "description": "",
+                "operationId": "newsletterCode",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Email to enter into Newsletter",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of the Person to enter",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "additional",
+                        "in": "query",
+                        "description": "Additional Parameters depending on Newsletter Provider",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "properties": {
+                                "msg": {
+                                    "type": "string"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "success",
+                                        "error"
+                                    ]
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/purchase": {
+            "get": {
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "Find Purchases",
+                "description": "",
+                "operationId": "purchaseFind",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/aggregateId"
+                    },
+                    {
+                        "$ref": "#/parameters/versionId"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Status of the Purchase",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "orderId",
+                        "in": "query",
+                        "description": "orderId of the Purchase",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "orderDate",
+                        "in": "query",
+                        "description": "orderDate of the Purchase",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "email of the Purchase",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "user",
+                        "in": "query",
+                        "description": "user of the Purchase",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Purchase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/purchase/{aggregateId}": {
+            "get": {
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "Get a specific Purchase",
+                "description": "",
+                "operationId": "purchaseGet",
+                "parameters": [
+                    {
+                        "name": "aggregateId",
+                        "in": "path",
+                        "description": "aggregateId of the purchase",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/Purchase"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/responses/404"
+                    }
+                }
+            }
+        },
+        "/purchase/count": {
+            "get": {
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "Count Number of Purchases",
+                "description": "",
+                "operationId": "purchaseCount",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/aggregateId"
+                    },
+                    {
+                        "$ref": "#/parameters/versionId"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Status of the Purchase",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "orderId",
+                        "in": "query",
+                        "description": "orderId of the Purchase",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "orderDate",
+                        "in": "query",
+                        "description": "orderDate of the Purchase",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "email of the Purchase",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    },
+                    {
+                        "name": "user",
+                        "in": "query",
+                        "description": "user of the Purchase",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "pipes"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/recommendation/one": {
+            "get": {
+                "tags": [
+                    "recommendation"
+                ],
+                "summary": "Get one Recommendation based on Articles",
+                "description": "",
+                "operationId": "recommendationOne",
+                "parameters": [
+                    {
+                        "name": "version_ids",
+                        "in": "query",
+                        "description": "version_ids of articles",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "skus",
+                        "in": "query",
+                        "description": "skus of articles",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/Article"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/recommendation/many": {
+            "get": {
+                "tags": [
+                    "recommendation"
+                ],
+                "summary": "Get many Recommendations based on Articles",
+                "description": "",
+                "operationId": "recommendationMany",
+                "parameters": [
+                    {
+                        "name": "version_ids",
+                        "in": "query",
+                        "description": "version_ids of articles",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "skus",
+                        "in": "query",
+                        "description": "skus of articles",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "quantity",
+                        "in": "query",
+                        "description": "quantity of articles",
+                        "required": false,
+                        "type": "integer",
+                        "default": "5"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Article"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    }
+                }
+            }
+        },
+        "/settings": {
+            "get": {
+                "tags": [
+                    "settings"
+                ],
+                "summary": "Get Settings",
+                "description": "",
+                "operationId": "settingsGet",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID of Settings",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "properties": {
+                                "defaultCountry": {
+                                    "type": "string"
+                                },
+                                "currency": {
+                                    "type": "string"
+                                },
+                                "language": {
+                                    "type": "string"
+                                },
+                                "production": {
+                                    "type": "string"
+                                },
+                                "apiUrl": {
+                                    "type": "string"
+                                },
+                                "shipping": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "paymentMethodModels": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "paymentMethodsCredentials": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "shop": {
+                                    "type": "string"
+                                },
+                                "shopUrl": {
+                                    "type": "string"
+                                },
+                                "shopApi": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "orderConfirmationEmail": {
+                                    "type": "string"
+                                },
+                                "freeNewsletterGift": {
+                                    "type": "string"
+                                },
+                                "trustedShopsId": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/responses/404"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "AbsoluteModifierCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                },
+                {
+                    "properties": {
+                        "value": {
+                            "$ref": "#/definitions/Money"
+                        },
+                        "target": {
+                            "type": "string",
+                            "enum": [
+                                "sub",
+                                "totals",
+                                "shipping",
+                                "articles"
+                            ]
+                        },
+                        "applyToArticles": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "percentage": {
+                            "type": "boolean",
+                            "default": "false"
+                        }
+                    }
+                }
+            ]
+        },
+        "AbsolutePriceCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                },
+                {
+                    "properties": {
+                        "value": {
+                            "$ref": "#/definitions/Money"
+                        },
+                        "applyToArticles": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "AddArticleCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                },
+                {
+                    "properties": {
+                        "attributeToLoadBy": {
+                            "type": "string"
+                        },
+                        "articleIds": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "BindArticleCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                },
+                {
+                    "properties": {
+                        "attributeToLoadBy": {
+                            "type": "string"
+                        },
+                        "articleIds": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "CombineableWithEverythingCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                }
+            ]
+        },
+        "Condition": {
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "type": "object",
+            "discriminator": "type"
+        },
+        "ContainsArticleCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                },
+                {
+                    "properties": {
+                        "articleSkus": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Condition"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "CountryCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                },
+                {
+                    "properties": {
+                        "shipping": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "FreeArticleCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                },
+                {
+                    "properties": {
+                        "attributeToLoadBy": {
+                            "type": "string"
+                        },
+                        "articleIds": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "GroupCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                },
+                {
+                    "properties": {
+                        "group": {
+                            "type": "integer"
+                        },
+                        "combinables": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "MinimumArticleCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                },
+                {
+                    "properties": {
+                        "value": {
+                            "type": "integer"
+                        },
+                        "target": {
+                            "type": "string",
+                            "enum": [
+                                "sub",
+                                "articles"
+                            ]
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Condition"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "MinimumCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                },
+                {
+                    "properties": {
+                        "value": {
+                            "$ref": "#/definitions/Money"
+                        },
+                        "target": {
+                            "type": "string",
+                            "enum": [
+                                "sub",
+                                "articles"
+                            ]
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Condition"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "OrCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                },
+                {
+                    "properties": {
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Condition"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "PercentageModifierCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                },
+                {
+                    "properties": {
+                        "value": {
+                            "type": "integer"
+                        },
+                        "target": {
+                            "type": "string",
+                            "enum": [
+                                "sub",
+                                "totals",
+                                "shipping",
+                                "articles"
+                            ]
+                        },
+                        "applyToArticles": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "percentage": {
+                            "type": "boolean",
+                            "default": "true"
+                        }
+                    }
+                }
+            ]
+        },
+        "ShippingCondition": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Condition"
+                },
+                {
+                    "properties": {
+                        "target": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Condition"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "EmailValidation": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Validation"
+                },
+                {
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "description": "The Email this Validations is bound to",
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "ExpiresValidation": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Validation"
+                },
+                {
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "description": "Expire Date",
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    }
+                }
+            ]
+        },
+        "IgnoreArticlesValidation": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Validation"
+                },
+                {
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "description": "array of aggregate ids to ignore",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "NewsletterValidation": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Validation"
+                },
+                {
+                    "properties": {
+                        "value": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "StartValidation": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Validation"
+                },
+                {
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "description": "Start Date",
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    }
+                }
+            ]
+        },
+        "UsageCountValidation": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Validation"
+                },
+                {
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "description": "Usage Count",
+                            "type": "integer"
+                        }
+                    }
+                }
+            ]
+        },
+        "Validation": {
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "type": "object",
+            "discriminator": "type"
+        },
+        "Address": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "addressLine1": {
+                    "type": "string"
+                },
+                "addressLine2": {
+                    "type": "string"
+                },
+                "postalCode": {
+                    "type": "string"
+                },
+                "addressLevel2": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "versionId": {
+                    "description": "The version id of the object",
+                    "type": "integer"
+                },
+                "aggregateId": {
+                    "description": "The uuid v4 of the object",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Article": {
+            "properties": {
+                "name": {
+                    "description": "The name of the article",
+                    "type": "string"
+                },
+                "sku": {
+                    "description": "The SKU of the article",
+                    "type": "string"
+                },
+                "price": {
+                    "description": "The price of the article",
+                    "$ref": "#/definitions/Money"
+                },
+                "tax": {
+                    "description": "The tax of the article",
+                    "type": "number",
+                    "format": "float"
+                },
+                "status": {
+                    "description": "The status of the article",
+                    "type": "string",
+                    "enum": [
+                        "available",
+                        "disabled",
+                        "out_of_stock"
+                    ]
+                },
+                "netWeight": {
+                    "description": "The net weight of the article in g",
+                    "type": "integer"
+                },
+                "stock": {
+                    "description": "The stock of the article",
+                    "type": "integer"
+                },
+                "isVirtual": {
+                    "description": "Is the article virtual?",
+                    "type": "boolean"
+                },
+                "allowsVariablePrice": {
+                    "type": "boolean"
+                },
+                "custom": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "versionId": {
+                    "description": "The version id of the object",
+                    "type": "integer"
+                },
+                "aggregateId": {
+                    "description": "The uuid v4 of the object",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Usages": {
+            "properties": {
+                "count": {
+                    "type": "number"
+                },
+                "maxUsages": {
+                    "type": "number"
+                },
+                "total": {
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "Code": {
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "enabled",
+                        "disabled"
+                    ]
+                },
+                "hidden": {
+                    "type": "boolean"
+                },
+                "validation": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Validation"
+                    }
+                },
+                "code": {
+                    "description": "The code of the code",
+                    "type": "string"
+                },
+                "note": {
+                    "description": "A note to the code",
+                    "type": "string"
+                },
+                "codepoolId": {
+                    "description": "The assigned codepool id",
+                    "type": "integer"
+                },
+                "usages": {
+                    "type": "string"
+                },
+                "usagesRaw": {
+                    "$ref": "#/definitions/Usages"
+                },
+                "conditionSetActive": {
+                    "$ref": "#/definitions/ConditionSet"
+                },
+                "conditionSetName": {
+                    "type": "string"
+                },
+                "conditionSetId": {
+                    "type": "string"
+                },
+                "conditionSetVersionId": {
+                    "type": "string"
+                },
+                "codepoolName": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "usedValue": {
+                    "$ref": "#/definitions/Money"
+                },
+                "versionId": {
+                    "description": "The version id of the object",
+                    "type": "integer"
+                },
+                "aggregateId": {
+                    "description": "The uuid v4 of the object",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Codeless": {
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "enabled",
+                        "disabled"
+                    ]
+                },
+                "validation": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Validation"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "note": {
+                    "description": "A note to the code",
+                    "type": "string"
+                },
+                "usages": {
+                    "type": "string"
+                },
+                "usagesRaw": {
+                    "$ref": "#/definitions/Usages"
+                },
+                "conditionSetActive": {
+                    "$ref": "#/definitions/ConditionSet"
+                },
+                "conditionSetName": {
+                    "type": "string"
+                },
+                "conditionSetId": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "usedValue": {
+                    "$ref": "#/definitions/Money"
+                },
+                "start": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "end": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "versionId": {
+                    "description": "The version id of the object",
+                    "type": "integer"
+                },
+                "aggregateId": {
+                    "description": "The uuid v4 of the object",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ConditionSet": {
+            "properties": {
+                "name": {
+                    "description": "The name",
+                    "type": "string"
+                },
+                "conditions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Condition"
+                    }
+                },
+                "group": {
+                    "type": "integer"
+                },
+                "versionId": {
+                    "description": "The version id of the object",
+                    "type": "integer"
+                },
+                "aggregateId": {
+                    "description": "The uuid v4 of the object",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "EventSourceEvent": {
+            "properties": {
+                "versionId": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                },
+                "aggregateId": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "type": "object"
+        },
+        "EventSourceObject": {
+            "properties": {
+                "versionId": {
+                    "description": "The version id of the object",
+                    "type": "integer"
+                },
+                "aggregateId": {
+                    "description": "The uuid v4 of the object",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "PaymentMethod": {
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "enabled",
+                        "disabled"
+                    ]
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "integer"
+                },
+                "versionId": {
+                    "description": "The version id of the object",
+                    "type": "integer"
+                },
+                "aggregateId": {
+                    "description": "The uuid v4 of the object",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "PaymentInformation": {
+            "properties": {
+                "linkedCodes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "type": "object"
+        },
+        "Purchase": {
+            "properties": {
+                "purchaseArticles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PurchaseArticle"
+                    }
+                },
+                "codes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Code"
+                    }
+                },
+                "shippingAddress": {
+                    "$ref": "#/definitions/Address"
+                },
+                "billingAddress": {
+                    "$ref": "#/definitions/Address"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "paymentMethod": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string"
+                },
+                "originStatus": {
+                    "type": "string",
+                    "enum": [
+                        "",
+                        "ready_to_import",
+                        "imported",
+                        "error_in_import",
+                        "wait_for_manual"
+                    ]
+                },
+                "status": {
+                    "description": "The status of the Purchase",
+                    "type": "string",
+                    "enum": [
+                        "new",
+                        "placed",
+                        "payment_failed",
+                        "payment_pending",
+                        "payment_done",
+                        "shipped",
+                        "canceled"
+                    ]
+                },
+                "paymentInformation": {
+                    "$ref": "#/definitions/PaymentInformation"
+                },
+                "shippingMethod": {
+                    "type": "string"
+                },
+                "purchaseEvents": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/EventSourceEvent"
+                    }
+                },
+                "grandTotal": {
+                    "$ref": "#/definitions/Money"
+                },
+                "subTotal": {
+                    "$ref": "#/definitions/Money"
+                },
+                "taxTotal": {
+                    "$ref": "#/definitions/Money"
+                },
+                "discountedTotal": {
+                    "$ref": "#/definitions/Money"
+                },
+                "shipping": {
+                    "$ref": "#/definitions/Money"
+                },
+                "shippingTax": {
+                    "$ref": "#/definitions/Money"
+                },
+                "orderId": {
+                    "type": "string"
+                },
+                "codelessVersionId": {
+                    "type": "integer"
+                },
+                "codeless": {
+                    "$ref": "#/definitions/Codeless"
+                },
+                "orderDate": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "trackingCodes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "versionId": {
+                    "description": "The version id of the object",
+                    "type": "integer"
+                },
+                "aggregateId": {
+                    "description": "The uuid v4 of the object",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "PurchaseArticle": {
+            "properties": {
+                "articleAggregateId": {
+                    "description": "Aggregate Id of the Article",
+                    "type": "string"
+                },
+                "articleVersionId": {
+                    "description": "Version Id of the Article",
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "custom": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "price": {
+                    "description": "Price of the Article",
+                    "$ref": "#/definitions/Money"
+                },
+                "name": {
+                    "description": "Name of the Article",
+                    "type": "string"
+                },
+                "sku": {
+                    "description": "Sku of the Article",
+                    "type": "string"
+                },
+                "tax": {
+                    "description": "Tax of the Article",
+                    "type": "number",
+                    "format": "float"
+                },
+                "originalPrice": {
+                    "$ref": "#/definitions/Money"
+                }
+            },
+            "type": "object"
+        },
+        "PurchaseEvent": {
+            "type": "object"
+        },
+        "ShippingCostOption": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "price": {
+                    "$ref": "#/definitions/Money"
+                },
+                "validation": {
+                    "$ref": "#/definitions/ShippingCostOptionValidation"
+                }
+            },
+            "type": "object"
+        },
+        "ShippingCostOptionValidation": {
+            "properties": {
+                "sub": {
+                    "$ref": "#/definitions/Money"
+                }
+            },
+            "type": "object"
+        },
+        "ShippingCost": {
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "enabled",
+                        "disabled"
+                    ]
+                },
+                "time": {
+                    "type": "integer"
+                },
+                "timeMax": {
+                    "type": "integer"
+                },
+                "country": {
+                    "description": "The code of the code",
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "description": "The code of the code",
+                    "$ref": "#/definitions/Money"
+                },
+                "options": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ShippingCostOption"
+                    }
+                },
+                "orderDeadline": {
+                    "type": "string"
+                },
+                "validation": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ShippingCostValidation"
+                    }
+                },
+                "originIdentification": {
+                    "type": "string"
+                },
+                "sortWeight": {
+                    "type": "integer"
+                },
+                "versionId": {
+                    "description": "The version id of the object",
+                    "type": "integer"
+                },
+                "aggregateId": {
+                    "description": "The uuid v4 of the object",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "PaymentMethodValidation": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ShippingCostValidation"
+                },
+                {
+                    "required": [
+                        "invalidPaymentMethod"
+                    ],
+                    "properties": {
+                        "invalidPaymentMethod": {
+                            "description": "",
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "PeriodValidation": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ShippingCostValidation"
+                },
+                {
+                    "required": [
+                        "fromWeekDay",
+                        "fromTime",
+                        "toWeekDay",
+                        "toTime"
+                    ],
+                    "properties": {
+                        "fromWeekDay": {
+                            "description": "",
+                            "type": "string"
+                        },
+                        "fromTime": {
+                            "description": "",
+                            "type": "string"
+                        },
+                        "toWeekDay": {
+                            "description": "",
+                            "type": "string"
+                        },
+                        "toTime": {
+                            "description": "",
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "PostalCodeValidation": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ShippingCostValidation"
+                },
+                {
+                    "required": [
+                        "invalidPaymentMethod"
+                    ],
+                    "properties": {
+                        "invalidPaymentMethod": {
+                            "description": "",
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "PostboxValidation": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ShippingCostValidation"
+                },
+                {}
+            ]
+        },
+        "ShippingCostValidation": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "type": "object",
+            "discriminator": "type"
+        },
+        "Money": {
+            "properties": {
+                "amount": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string",
+                    "default": "EUR",
+                    "enum": [
+                        "EUR"
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "ErrorResponse": {
+            "properties": {
+                "reason": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
+        "Codepool": {
+            "properties": {
+                "id": {
+                    "description": "App\\Models\\Codepool",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "App\\Models\\Codepool",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "App\\Models\\Codepool",
+                    "type": "string"
+                },
+                "trackingSlug": {
+                    "description": "App\\Models\\Codepool",
+                    "type": "string"
+                },
+                "defaultConditionSet": {
+                    "$ref": "#/definitions/ConditionSet"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "deletedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "statistics": {
+                    "properties": {
+                        "grandTotal": {
+                            "type": "string"
+                        },
+                        "grandTotalAverage": {
+                            "type": "string"
+                        },
+                        "subTotal": {
+                            "type": "string"
+                        },
+                        "subTotalAverage": {
+                            "type": "string"
+                        },
+                        "subTotalWithoutTax": {
+                            "type": "string"
+                        },
+                        "subTotalWithoutTaxAverage": {
+                            "type": "string"
+                        },
+                        "discountedTotal": {
+                            "type": "string"
+                        },
+                        "discountedTotalAverage": {
+                            "type": "string"
+                        },
+                        "purchaseCount": {
+                            "type": "integer"
+                        },
+                        "usageCount": {
+                            "type": "integer"
+                        },
+                        "codeCount": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "IgnoreArticleValidation": {
+            "properties": {
+                "value": {
+                    "description": "Date",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "IgnoreArticle": {
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "validation": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/IgnoreArticleValidation"
+                    }
+                },
+                "article": {
+                    "$ref": "#/definitions/Article"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "parameters": {
+        "aggregateId": {
+            "name": "aggregateId",
+            "in": "query",
+            "description": "aggregate_id",
+            "required": false,
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "collectionFormat": "pipes"
+        },
+        "versionId": {
+            "name": "versionId",
+            "in": "query",
+            "description": "versionId",
+            "required": false,
+            "type": "array",
+            "items": {
+                "type": "integer"
+            },
+            "collectionFormat": "pipes"
+        }
+    },
+    "responses": {
+        "400": {
+            "description": "Bad Request",
+            "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+            }
+        },
+        "401": {
+            "description": "Unauthorized",
+            "schema": {
+                "$ref": "#/definitions/ErrorResponse"
+            }
+        },
+        "404": {
+            "description": "Not Found"
+        }
+    }
+}
